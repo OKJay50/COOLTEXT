@@ -34,25 +34,21 @@ registerRoute(
   pageCache                                     // Use the page cache strategy
 );
 
-// Implement asset caching
-
-// Define a condition to cache images, scripts, and styles
-const assetMatchFunction = ({ request }) =>
-  ['image', 'script', 'style'].includes(request.destination);
-
-// Use CacheFirst strategy for these assets
-const assetCache = new CacheFirst({
-  cacheName: 'asset-cache',
-  plugins: [
-    new CacheableResponsePlugin({
-      statuses: [0, 200],                       // Cache opaque and 200 OK responses
-    }),
-    new ExpirationPlugin({
-      maxEntries: 60,                           // Only keep 60 entries in cache
-      maxAgeSeconds: 30 * 24 * 60 * 60,         // Cache for 30 days
-    }),
-  ],
-});
-
-// Register the route for asset caching
-registerRoute(assetMatchFunction, assetCache);
+// TODO: Implement asset caching. Add details about what assets to cache and the caching strategy.
+registerRoute(
+  // Define a condition for which assets to cache (e.g., images, scripts, styles)
+  ({ request }) => request.destination === 'image',
+  // Define a caching strategy for the assets (e.g., CacheFirst, StaleWhileRevalidate)
+  new CacheFirst({
+    cacheName: 'asset-cache',
+    plugins: [
+      new CacheableResponsePlugin({
+        statuses: [0, 200],
+      }),
+      new ExpirationPlugin({
+        maxEntries: 60,                        // Only keep 60 entries in cache
+        maxAgeSeconds: 30 * 24 * 60 * 60,      // Cache for 30 days
+      }),
+    ],
+  })
+);
